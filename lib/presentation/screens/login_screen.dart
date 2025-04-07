@@ -1,9 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:tp/presentation/screens/register_screen.dart';
 import '../widgets/custom_input_field.dart'; // استيراد حقل الإدخال المخصص
+import 'register_screen.dart'; // استيراد شاشة تسجيل جديد
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  // المتحكمات لحقول الإدخال
+  final TextEditingController _emailController = TextEditingController(); // البريد الإلكتروني
+  final TextEditingController _passwordController = TextEditingController(); // كلمة المرور
+
+  void _validateAndLogin(BuildContext context) {
+    // التحقق من أن جميع الحقول ممتلئة
+    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+      // عرض رسالة خطأ إذا كانت هناك حقول فارغة
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Пожалуйста, заполните все поля'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // هنا يمكنك إضافة منطق تسجيل الدخول الحقيقي (مثل الاتصال بالخادم)
+    print('تسجيل الدخول: ${_emailController.text}');
+
+    // الانتقال إلى الصفحة الرئيسية
+    Navigator.pushReplacementNamed(context, '/home');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,20 +47,40 @@ class LoginScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CustomInputField(
-              hintText: 'Email',
-              icon: Icons.email,
-              obscureText: false,
+            // حقل البريد الإلكتروني
+            TextField(
+              controller: _emailController, // ربط المتحكم
+              decoration: InputDecoration(
+                hintText: 'Email',
+                icon: Icon(Icons.email),
+                filled: true,
+                fillColor: Colors.grey[800],
+                hintStyle: TextStyle(color: Colors.grey[500]),
+              ),
+              style: TextStyle(color: Colors.white),
             ),
+
             SizedBox(height: 16),
-            CustomInputField(
-              hintText: 'Пароль',
-              icon: Icons.lock,
+
+            // حقل كلمة المرور
+            TextField(
+              controller: _passwordController, // ربط المتحكم
               obscureText: true,
+              decoration: InputDecoration(
+                hintText: 'Пароль',
+                icon: Icon(Icons.lock),
+                filled: true,
+                fillColor: Colors.grey[800],
+                hintStyle: TextStyle(color: Colors.grey[500]),
+              ),
+              style: TextStyle(color: Colors.white),
             ),
+
             SizedBox(height: 30),
+
+            // زر تسجيل الدخول
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () => _validateAndLogin(context), // التحقق والدخول
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white, // الخلفية البيضاء
                 foregroundColor: Colors.black, // النص الأسود
@@ -46,7 +95,10 @@ class LoginScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 18),
               ),
             ),
+
             SizedBox(height: 16),
+
+            // رابط إلى صفحة تسجيل جديد
             TextButton(
               onPressed: () {
                 Navigator.push(
@@ -55,7 +107,7 @@ class LoginScreen extends StatelessWidget {
                 );
               },
               child: Text(
-                'Нет аккаунт? Зарегиструйтесь',
+                'Нет аккаунта? Зарегистрируйтесь',
                 style: TextStyle(color: Colors.white),
               ),
             ),
@@ -63,5 +115,13 @@ class LoginScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    // تحرير المتحكمات عند تدمير الـ Widget
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 }

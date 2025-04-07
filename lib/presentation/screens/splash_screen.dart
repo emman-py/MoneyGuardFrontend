@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import '../screens/welcome_screen.dart'; // استيراد WelcomeScreen
+import 'welcome_screen.dart'; // استيراد شاشة الترحيب
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -13,19 +13,16 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // انتظر 3 ثانية ثم انتقل إلى الشاشة التالية
+    // مؤقت لمدة 3 ثوانٍ قبل الانتقال إلى شاشة الترحيب
     Timer(Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => WelcomeScreen()),
-      );
+      Navigator.pushReplacementNamed(context, '/welcome'); // الانتقال إلى WelcomeScreen
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.black, // خلفية سوداء
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

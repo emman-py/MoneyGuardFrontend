@@ -1,10 +1,56 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../widgets/circle_indicator.dart'; // استيراد CircleIndicator
 import 'login_screen.dart'; // استيراد شاشة تسجيل الدخول
-import 'register_screen.dart'; // استيراد شاشة تسجيل جديد
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
+
+  @override
+  _WelcomeScreenState createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen> {
+  int currentStep = 0; // مؤشر لتتبع الجزء الحالي
+
+  // قائمة بالنصوص التي سيتم عرضها لكل جزء
+  List<Map<String, String>> content = [
+    {
+      'title': 'Начните',
+      'description': 'Управляйте своими финансами грамотно и четко',
+    },
+    {
+      'title': 'Начните',
+      'description': 'Используйте ии-ассистента для экономии',
+    },
+    {
+      'title': 'Начните',
+      'description': 'Стройте удобные цели и задачи',
+    },
+  ];
+
+  void navigateToNextStep() {
+    if (currentStep < content.length - 1) {
+      setState(() {
+        currentStep++;
+      });
+    } else {
+      Navigator.pushReplacementNamed(context, '/login'); // الانتقال إلى شاشة تسجيل الدخول
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Timer.periodic(Duration(seconds: 3), (timer) {
+      if (currentStep < content.length) {
+        navigateToNextStep();
+      } else {
+        timer.cancel(); // إيقاف التكرار عند انتهاء جميع الأجزاء
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +65,7 @@ class WelcomeScreen extends StatelessWidget {
             children: [
               // العنوان الرئيسي
               Text(
-                'Начните',
+                content[currentStep]['title']!,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 28,
@@ -32,7 +78,7 @@ class WelcomeScreen extends StatelessWidget {
 
               // الوصف
               Text(
-                'Управляйте своими финансами грамотно и четко',
+                content[currentStep]['description']!,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,
@@ -47,11 +93,11 @@ class WelcomeScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircleIndicator(isActive: true), // الدائرة الأولى نشطة
-                  SizedBox(width: 8), // مسافة بين الدوائر
-                  CircleIndicator(isActive: false),
-                  SizedBox(width: 8), // مسافة بين الدوائر
-                  CircleIndicator(isActive: false),
+                  CircleIndicator(isActive: currentStep == 0),
+                  SizedBox(width: 8),
+                  CircleIndicator(isActive: currentStep == 1),
+                  SizedBox(width: 8),
+                  CircleIndicator(isActive: currentStep == 2),
                 ],
               ),
 
@@ -61,11 +107,7 @@ class WelcomeScreen extends StatelessWidget {
               // الزر الأول: تسجيل الدخول
               ElevatedButton(
                 onPressed: () {
-                  // الانتقال إلى صفحة تسجيل الدخول
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginScreen()),
-                  );
+                  Navigator.pushReplacementNamed(context, '/login');
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white, // الخلفية البيضاء
@@ -88,11 +130,7 @@ class WelcomeScreen extends StatelessWidget {
               // الزر الثاني: تسجيل جديد
               ElevatedButton(
                 onPressed: () {
-                  // الانتقال إلى صفحة تسجيل جديد
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => RegisterScreen()),
-                  );
+                  Navigator.pushReplacementNamed(context, '/register');
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey[700], // الخلفية الرمادية المظلمة
